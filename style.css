@@ -1,0 +1,348 @@
+:root {
+    --background: #f5f1e8;      /*page background (cream)*/
+    --white: #ffffff;           /*cards, order panel, popups*/
+    --black: #171717;           /*main text and black buttons*/
+    --gray: #666;               /*small gray text*/
+    --accent: #ff5a1f;          /*orange: prices, charge button*/
+}
+
+
+/*2. BASICS  (apply to the whole page)*/
+* { box-sizing: center-box; }
+
+body {
+    margin: 0;                          /*no space around the page*/
+    background: var(--background);
+    color: var(--black);
+    font-family: "Archivo", sans-serif; /*font of the whole app*/
+}
+
+button { font-family: inherit; cursor: pointer; }   /*all buttons: same font + hand cursor*/
+
+
+/*3. TOP BAR  (.topbar -> .topbar-logo -> .topbar-buttons)*/
+.topbar {
+    display: flex;                      /*logo and buttons in one row*/
+    justify-content: space-between;     /*logo left, buttons right*/
+    align-items: center;
+    padding: 14px 24px;
+    border-bottom: 1px solid #ddd;
+}
+
+.topbar-logo { font-size: 26px; font-weight: 900; }                          /*"Crave" text*/
+.topbar-logo span { color: var(--accent); }                                  /*orange dot*/
+.topbar-logo small { font-size: 14px; color: var(--gray); font-weight: 600; }/*small "POS"*/
+
+.topbar-buttons { display: flex; gap: 10px; }       /*History + Sign in side by side*/
+
+.topbar-user, .topbar-history {         /*both top buttons share this*/
+    padding: 10px 18px;
+    border-radius: 30px;                /*pill shape*/
+    font-weight: 600;
+}
+.topbar-user { border: none; background: var(--black); color: white; }                          /*black Sign in button*/
+.topbar-history { border: 1px solid #ccc; background: transparent; color: var(--black); }       /*outlined History button*/
+
+
+/*4. PAGE LAYOUT  (.page holds .menu and .order)*/
+.page {
+    display: grid;
+    grid-template-columns: 1fr 380px;   /*menu takes the space, order is 380px*/
+    gap: 24px;
+    padding: 24px;
+    max-width: 1300px;
+    margin: auto;                       /*centers the page*/
+}
+
+
+/*5. MENU  (.menu-categories -> .menu-products -> .product)*/
+.menu-categories {                      /*row of All / Burger / Drinks buttons*/
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-bottom: 20px;
+}
+.menu-categories button {                  /*adto ini ha js makikita*/
+    border: 1px solid #ccc;
+    background: transparent;
+    padding: 10px 18px;
+    border-radius: 30px;
+    font-weight: 600;
+}
+.menu-categories button.active { background: var(--black); color: white; }      /*the selected category(js ghap ini)*/
+
+.menu-products {                        /*grid that holds all product cards*/
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+    gap: 14px;
+}
+
+.product {                              /*one product card(adto ghap ini ha js. An mga product ID)*/
+    position: relative;                 
+    cursor: pointer;
+    background: var(--white);
+    border: 1px solid #f0e9e9;
+    border-radius: 16px;
+    overflow: hidden;
+    transition: transform 0.15s;
+}
+.product:hover { transform: translateY(-3px); }     /*moves up when hovered*/
+.product:active { transform: scale(0.97); }         /*shrinks when clicked*/
+
+.product img { width: 100%; height: 120px; object-fit: cover; display: block; }    /*product picture*/
+.product-info { padding: 12px 14px 14px; }                                         /*space around name + price*/
+.product h3 { margin: 0 0 6px; font-size: 16px; }                                  /*product name*/
+.product strong { color: var(--accent); }                                          /*product price (orange)*/
+
+.product-add {                          /*black round + button dida ha pic*/
+    position: absolute;
+    right: 10px;
+    bottom: 10px;
+    width: 38px;
+    height: 38px;
+    border: none;
+    border-radius: 50%;
+    background: var(--black);
+    color: white;
+    font-size: 24px;
+    line-height: 1;
+}
+.product-add:hover { background: var(--accent); }
+
+
+/*6. ORDER  (items -> total -> cash -> change -> charge/clear)*/
+.order {                                    /*html*/
+    background: var(--white);
+    border-radius: 18px;
+    padding: 22px;
+    display: flex;
+    flex-direction: column;             /*stacks everything top to bottom*/
+    position: sticky;                   /*stays visible while scrolling*/
+    top: 24px;
+    height: calc(100vh - 110px);
+}
+.order h2 { margin: 0 0 14px; font-size: 22px; }        /*"Order #1" title*/
+
+/* --- items in the order --- */
+.order-items { flex: 1; overflow-y: auto; }             /*list takes free space and scrolls*/
+.order-empty { color: var(--gray); text-align: center; margin-top: 40px; }      /*"Tap an item to add it."*/
+
+.order-item {                           /*one item row*/
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 0;
+    border-bottom: 1px solid #eee;
+}
+.order-item h4 { margin: 0 0 4px; font-size: 15px; }                /*item name*/
+.order-item p { margin: 0; color: var(--gray); font-size: 13px; }   /*price x qty line*/
+
+.order-item-controls { display: flex; align-items: center; gap: 10px; }         /*the - 1 + group*/
+.order-item-controls button {
+    width: 28px;
+    height: 28px;
+    border: none;
+    border-radius: 50%;
+    background: var(--black);
+    color: white;
+}
+
+/* --- total, cash, change --- */
+.order-total {
+    display: flex;
+    justify-content: space-between;
+    font-size: 20px;
+    padding-top: 14px;
+    margin-top: 10px;
+    border-top: 1px solid #ccc;
+}
+
+.order-cash {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 12px;
+    font-weight: 600;
+}
+.order-cash-input {
+    width: 140px;
+    padding: 10px;
+    font-size: 18px;
+    text-align: right;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    font-family: inherit;
+}
+
+.order-change {                         /*smaller gray row*/
+    display: flex;
+    justify-content: space-between;
+    font-size: 16px;
+    color: var(--gray);
+    padding-top: 14px;
+}
+
+/* --- big orange buttons (used in the order panel and popups) --- */
+.order-charge, .login-button, .receipt-print, .confirm-yes {
+    width: 100%;
+    padding: 16px;
+    border: none;
+    border-radius: 30px;
+    font-weight: 700;
+    font-size: 16px;
+    margin-top: 12px;
+    background: var(--accent);
+    color: white;
+}
+.order-charge:disabled { background: #ccc; cursor: not-allowed; }       /*gray when it can't be clicked*/
+
+/* --- big outlined buttons --- */
+.order-clear, .login-cancel, .receipt-close, .confirm-no {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ccc;
+    background: transparent;
+    border-radius: 30px;
+    font-weight: 700;
+    font-size: 16px;
+    margin-top: 12px;
+}
+
+
+/*7. POPUPS  (.login -> .receipt -> .history -> .confirm)*/
+
+/* --- shared: dark background behind every popup --- */
+.login, .receipt, .history, .confirm {
+    position: fixed;
+    inset: 0;                           /*covers the whole screen*/
+    background: rgba(0, 0, 0, 0.45);
+    display: none;                      /*hidden until JS adds "show"*/
+    align-items: center;
+    justify-content: center;
+    z-index: 500;
+    padding: 20px;
+}
+.login.show, .receipt.show, .history.show, .confirm.show { display: flex; }     /*makes the popup visible*/
+
+/* --- shared: the white box inside every popup --- */
+.login-box, .receipt-box, .history-box, .confirm-box {
+    background: var(--white);
+    border-radius: 18px;
+    padding: 26px;
+    width: min(380px, 100%);
+    max-height: 90vh;
+    overflow-y: auto;
+}
+.login-box h2, .history-box h2 { margin-top: 0; }       /*popup title*/
+
+/* --- login (sign in popup) --- */
+.login-box input {
+    width: 94%;
+    padding: 12px;
+    margin-bottom: 10px;
+    font-size: 16px;
+    font-family: inherit;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+}
+.login-error { color: #e74c3c; min-height: 20px; margin: 0; font-size: 14px; }  /*"Wrong username or password"*/
+
+/* --- receipt popup --- */
+.receipt-text { font-family: "Courier New", monospace; font-size: 14px; }
+.receipt-text h3 { text-align: center; margin: 0; font-size: 20px; }            /*"Crave." title*/
+.receipt-center { text-align: center; margin: 2px 0; color: var(--gray); }      /*centered lines*/
+.receipt-text hr { border: none; border-top: 1px dashed #999; margin: 12px 0; } /*dashed lines*/
+.receipt-row { display: flex; justify-content: space-between; gap: 10px; margin: 4px 0; }   /*name left, price right*/
+.receipt-bold { font-weight: 700; font-size: 16px; }                            /*the TOTAL row*/
+
+/* --- history popup --- */
+.history-box { width: min(700px, 100%); }                                       /*wider than the others*/
+.history-top { display: flex; justify-content: space-between; align-items: center; }
+.history-buttons { display: flex; align-items: center; gap: 12px; }             /*Reset + x buttons*/
+.history-reset {
+    border: 1px solid #ccc;
+    background: transparent;
+    border-radius: 20px;
+    padding: 6px 14px;
+    font-size: 13px;
+    font-weight: 600;
+}
+.history-reset:hover { border-color: #e74c3c; color: #e74c3c; }                 /*turns red when hovered*/
+.history-close { border: none; background: none; font-size: 32px; line-height: 1; }    /*x close button*/
+
+.history-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin: 14px 0 22px; }  /*3 boxes*/
+.history-stat { background: var(--background); border-radius: 12px; padding: 14px; }
+.history-stat span { font-size: 12px; color: var(--gray); font-weight: 600; }   /*small label*/
+.history-stat strong { display: block; font-size: 22px; margin-top: 4px; }      /*big number*/
+
+.history-body h3 { margin: 20px 0 10px; font-size: 16px; }                      /*"Best sellers" / "All orders"*/
+
+.history-bar-row { display: flex; align-items: center; gap: 10px; margin: 8px 0; font-size: 14px; }
+.history-bar-name { width: 130px; font-weight: 600; }
+.history-bar { flex: 1; background: var(--background); border-radius: 20px; height: 12px; overflow: hidden; }
+.history-bar div { height: 100%; background: var(--accent); border-radius: 20px; }  /*orange bar (width set by JS)*/
+.history-bar-qty { width: 110px; text-align: right; color: var(--gray); }
+
+.history-order { border-bottom: 1px solid #eee; padding: 10px 0; font-size: 14px; }     /*one order in the list*/
+.history-order-top { display: flex; justify-content: space-between; font-weight: 700; }
+.history-order p { margin: 4px 0 0; color: var(--gray); font-size: 13px; }
+.history-empty { color: var(--gray); text-align: center; padding: 30px 0; }     /*"No sales yet."*/
+
+/* --- confirm popup ("Reset today's sales?") --- */
+.confirm-box { text-align: center; width: min(360px, 100%); }
+.confirm-box h2 { margin: 12px 0 6px; }
+.confirm-box p { color: var(--gray); margin: 0 0 20px; line-height: 1.5; }
+.confirm-icon {                         /*round "!" icon*/
+    width: 56px;
+    height: 56px;
+    margin: 0 auto;
+    border-radius: 50%;
+    color: var(--accent);
+    font-size: 30px;
+    font-weight: 900;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.confirm-buttons { display: flex; gap: 10px; }                                  /*Cancel + Yes side by side*/
+.confirm-buttons button { margin-top: 0; flex: 1; padding: 14px; }
+.confirm-yes { background: #e74c3c; }                                           /*red "Yes, reset" button*/
+.confirm-yes:hover { background: #c0392b; }
+
+
+/* 
+   8. TOAST  (small message at the bottom of the screen)
+    */
+.toast {
+    position: fixed;
+    bottom: 40px;
+    left: 50%;
+    transform: translateX(-50%);        /*centers it*/
+    background: #2ecc71;                /*green = success*/
+    color: white;
+    padding: 16px 24px;
+    border-radius: 10px;
+    opacity: 0;                         /*invisible until JS adds "show"*/
+    pointer-events: none;
+    transition: opacity 0.3s;
+    z-index: 1000;
+}
+.toast.show { opacity: 1; }
+.toast.error { background: #e74c3c; }   /*red = error*/
+
+
+/*9. PHONE / TABLET AND PRINTING  (must stay at the bottom)*/
+@media (max-width: 800px) {             /*screens smaller than 800px*/
+    .page { grid-template-columns: 1fr; }           /*menu and order stack*/
+    .order { position: static; height: auto; }
+}
+
+@media (max-width: 600px) {             /*screens smaller than 600px*/
+    .history-stats { grid-template-columns: 1fr; }  /*the 3 boxes stack*/
+}
+
+@media print {                          /*when printing: only the receipt shows*/
+    body * { visibility: hidden; }
+    .receipt-text, .receipt-text * { visibility: visible; }
+    .receipt-text { position: absolute; left: 0; top: 0; width: 100%; }
+}

@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crave POS</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;600;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <script src="script.js" defer></script>
+</head>
+<body>
+
+    <!-- TOP BAR -->
+    <header class="topbar">
+        <div class="topbar-logo">Crave<span>.</span> <small>HOUSE</small></div>
+        <div class="topbar-buttons">
+            <button class="topbar-history">📊 History</button>
+            <button class="topbar-user">👤 Sign in</button>
+        </div>
+    </header>
+
+    <main class="page">
+
+        <!-- MENU (left side) -->
+        <section class="menu">
+            <div class="menu-categories"></div>
+            <div class="menu-products"></div>
+        </section>
+
+        <!-- ORDER (right side) -->
+        <aside class="order">
+            <h2>Order #<span class="order-number">1</span></h2>
+
+            <div class="order-items">
+                <!-- JS hides this message when the order has items -->
+                <p class="order-empty">Tap an item to add it.</p>
+                <!-- JS puts the item rows here -->
+                <div class="order-rows"></div>
+            </div>
+
+            <div class="order-total">
+                <span>Total</span>
+                <strong class="order-total-amount">₱0</strong>
+            </div>
+
+            <label class="order-cash">
+                Cash received
+                <input type="number" class="order-cash-input" min="0" step="any" placeholder="0">
+            </label>
+
+            <div class="order-change">
+                <span>Change</span>
+                <strong class="order-change-amount">₱0</strong>
+            </div>
+
+            <button class="order-charge">Charge</button>
+            <button class="order-clear">Clear order</button>
+        </aside>
+
+    </main>
+
+    <!-- SIGN IN POPUP -->
+    <div class="login">
+        <div class="login-box">
+            <h2>Sign in</h2>
+            <input type="text" class="login-username" placeholder="Username" autocomplete="username">
+            <input type="password" class="login-password" placeholder="Password" autocomplete="current-password">
+            <p class="login-error"></p>
+            <button class="login-button">Sign in</button>
+            <button class="login-cancel">Cancel</button>
+        </div>
+    </div>
+
+    <!-- RECEIPT POPUP -->
+    <div class="receipt">
+        <div class="receipt-box">
+            <div class="receipt-text">
+                <h3>Crave.</h3>
+                <p class="receipt-center">Good food. Good mood.</p>
+                <hr>
+                <div class="receipt-row"><span>Order #<span id="receipt-no"></span></span><span id="receipt-time"></span></div>
+                <div class="receipt-row"><span>Cashier</span><span id="receipt-cashier"></span></div>
+                <hr>
+                <!-- JS puts the item rows here -->
+                <div class="receipt-rows"></div>
+                <hr>
+                <div class="receipt-row receipt-bold"><span>TOTAL</span><span id="receipt-total"></span></div>
+                <div class="receipt-row"><span>Cash</span><span id="receipt-cash"></span></div>
+                <div class="receipt-row"><span>Change</span><span id="receipt-change"></span></div>
+                <hr>
+                <p class="receipt-center">Thank you! Come again.</p>
+            </div>
+            <button class="receipt-print">Print receipt</button>
+            <button class="receipt-close">New order</button>
+        </div>
+    </div>
+
+    <!-- HISTORY POPUP -->
+    <div class="history">
+        <div class="history-box">
+            <div class="history-top">
+                <h2>Sales history</h2>
+                <div class="history-buttons">
+                    <button class="history-reset">Reset</button>
+                    <button class="history-close">×</button>
+                </div>
+            </div>
+
+            <div class="history-body">
+                <!-- JS shows this when there are no sales -->
+                <p class="history-empty">No sales yet.</p>
+
+                <!-- JS shows this when there are sales -->
+                <div class="history-content">
+                    <div class="history-stats">
+                        <div class="history-stat"><span>ORDERS</span><strong id="history-orders-count"></strong></div>
+                        <div class="history-stat"><span>ITEMS SOLD</span><strong id="history-items-count"></strong></div>
+                        <div class="history-stat"><span>REVENUE</span><strong id="history-revenue"></strong></div>
+                    </div>
+                    <h3>Best sellers</h3>
+                    <div class="history-bars"></div>
+                    <h3>All orders</h3>
+                    <div class="history-orders"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- CONFIRM POPUP (reset sales) -->
+    <div class="confirm">
+        <div class="confirm-box">
+            <div class="confirm-icon">!</div>
+            <h2 class="confirm-title">Reset today's sales?</h2>
+            <p class="confirm-text">This sets the sales total and order numbers back to zero.</p>
+            <div class="confirm-buttons">
+                <button class="confirm-no">Cancel</button>
+                <button class="confirm-yes">Yes, reset</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- SMALL MESSAGE -->
+    <div class="toast"></div>
+
+
+    <!-- =====================================================
+         TEMPLATES (only for things that repeat many times)
+         JS copies these and fills in the [data-field] parts.
+         ===================================================== -->
+
+    <!-- category button (menu) -->
+    <template id="tpl-category">
+        <button data-field="name"></button>
+    </template>
+
+    <!-- product card (menu) -->
+    <template id="tpl-product">
+        <div class="product">
+            <img class="product-image" src="" alt="" onerror="this.style.visibility='hidden'">
+            <div class="product-info">
+                <h3 data-field="name"></h3>
+                <strong data-field="price"></strong>
+            </div>
+            <button class="product-add">+</button>
+        </div>
+    </template>
+
+    <!-- order panel: one item row -->
+    <template id="tpl-order-item">
+        <div class="order-item">
+            <div>
+                <h4 data-field="name"></h4>
+                <p data-field="line"></p>
+            </div>
+            <div class="order-item-controls">
+                <button class="order-minus">−</button>
+                <span data-field="qty"></span>
+                <button class="order-plus">+</button>
+            </div>
+        </div>
+    </template>
+
+    <!-- receipt: one item row -->
+    <template id="tpl-receipt-row">
+        <div class="receipt-row"><span data-field="name"></span><span data-field="amount"></span></div>
+    </template>
+
+    <!-- history: one best-seller bar -->
+    <template id="tpl-history-bar">
+        <div class="history-bar-row">
+            <span class="history-bar-name" data-field="name"></span>
+            <div class="history-bar"><div></div></div>
+            <span class="history-bar-qty" data-field="qty"></span>
+        </div>
+    </template>
+
+    <!-- history: one order in the list -->
+    <template id="tpl-history-order">
+        <div class="history-order">
+            <div class="history-order-top"><span data-field="no"></span><span data-field="total"></span></div>
+            <p data-field="meta"></p>
+            <p data-field="items"></p>
+        </div>
+    </template>
+
+</body>
+</html>
