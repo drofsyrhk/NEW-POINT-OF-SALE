@@ -1,14 +1,14 @@
 // ===== PRODUCTS (edit names, prices and IDs here) =====
 const products = [
-    { id: 1, name: "Classic Burger",    price: 99,  category: "Burger",   image: "images/CLASSIC BURGER.jpg" },
-    { id: 2, name: "Cheese Burger",     price: 119, category: "Burger",   image: "images/chess burger.jpg" },
-    { id: 3, name: "Classic Footlong",  price: 89,  category: "Footlong", image: "images/footlong.avif" },
-    { id: 4, name: "Chicken BBQ",       price: 89,  category: "Chicken",  image: "images/chicken.avif" },
-    { id: 5, name: "French Fries",      price: 69,  category: "Sides",    image: "images/french fries.jpg" },
-    { id: 6, name: "Cold Soda",         price: 100, category: "Drinks",   image: "images/cold soda.jpg" },
-    { id: 7, name: "Chicken Nuggets",   price: 99,  category: "Chicken",  image: "images/chicken nuggets.jpg" },
-    { id: 8, name: "Pizza",             price: 149, category: "Sides",    image: "images/pizza.jpg" },
-    { id: 9, name: "Taco",              price: 79,  category: "Sides",    image: "images/taco.jpg" }
+    { id: 1, name: "Classic Burger",    price: 99,  category: "Burger",   image: "CLASSIC BURGER.jpg" },
+    { id: 2, name: "Cheese Burger",     price: 119, category: "Burger",   image: "chess burger.jpg" },
+    { id: 3, name: "Classic Footlong",  price: 89,  category: "Footlong", image: "footlong.avif" },
+    { id: 4, name: "Chicken BBQ",       price: 89,  category: "Chicken",  image: "chicken.avif" },
+    { id: 5, name: "French Fries",      price: 69,  category: "Sides",    image: "french fries.jpg" },
+    { id: 6, name: "Cold Soda",         price: 100, category: "Drinks",   image: "cold soda.jpg" },
+    { id: 7, name: "Chicken Nuggets",   price: 99,  category: "Chicken",  image: "chicken nuggets.jpg" },
+    { id: 8, name: "Pizza",             price: 149, category: "Sides",    image: "pizza.jpg" },
+    { id: 9, name: "Taco",              price: 79,  category: "Sides",    image: "taco.jpg" }
 ];
 
 // ===== USERS (edit here) =====
