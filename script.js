@@ -53,7 +53,7 @@ function hide(selector) {
 
 // copy a <template> from index.html, fill in the text, and add it to the page
 // example data: { name: "Taco", price: "₱79" }  ->  fills data-field="name" and data-field="price"
-function addFromTemplate(templateId, parentSelector, data) {
+function addFromTemplate(templateId, parentSelector, data) {                    //taga himo hin card na automatic na pag butang
     const copy = $("#" + templateId).content.cloneNode(true);
     const item = copy.firstElementChild;
 
@@ -85,7 +85,7 @@ function saveData() {
 
 
 // ===== MENU =====
-function showCategories() {
+function showCategories() {                             //an categpries la ini
     $(".menu-categories").innerHTML = "";
 
     // make a list of category names, starting with "All"
@@ -106,7 +106,7 @@ function showCategories() {
     }
 }
 
-function showProducts() {
+function showProducts() {                   //an product card
     $(".menu-products").innerHTML = "";
 
     for (const p of products) {
@@ -135,7 +135,7 @@ function showProducts() {
 // ===== ORDER (the cart) =====
 
 // add or remove items. amount is +1 or -1
-function changeCart(id, amount) {
+function changeCart(id, amount) {               //taga ihap kun pira it ada ha cart ex. taco 9: tas ma 10 (9*10=90)
     cart[id] = (cart[id] || 0) + amount;
     if (cart[id] <= 0) delete cart[id];
     showCart();
@@ -150,7 +150,7 @@ function getTotal() {
     return total;
 }
 
-function showCart() {
+function showCart() {                           //taga surat didto ha cart
     $(".order-rows").innerHTML = "";
 
     const ids = Object.keys(cart);
