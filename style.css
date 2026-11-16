@@ -31,7 +31,7 @@ button { font-family: inherit; cursor: pointer; }   /*all buttons: same font + h
 
 .topbar-logo { font-size: 26px; font-weight: 900; }                          /*"Crave" text*/
 .topbar-logo span { color: var(--accent); }                                  /*orange dot*/
-.topbar-logo small { font-size: 14px; color: var(--gray); font-weight: 600; }/*small "POS"*/
+.topbar-logo small { font-size: 14px; color: var(--gray); font-weight: 600; }/*small "HOUSE"*/
 
 .topbar-buttons { display: flex; gap: 10px; }       /*History + Sign in side by side*/
 
@@ -86,7 +86,7 @@ button { font-family: inherit; cursor: pointer; }   /*all buttons: same font + h
     overflow: hidden;
     transition: transform 0.15s;
 }
-.product:hover { transform: translateY(-3px); }     /*moves up when hovered*/
+.product:hover { transform: translateY(-4px); }     /*moves up when hovered*/
 .product:active { transform: scale(0.97); }         /*shrinks when clicked*/
 
 .product img { width: 100%; height: 120px; object-fit: cover; display: block; }    /*product picture*/
@@ -150,7 +150,7 @@ button { font-family: inherit; cursor: pointer; }   /*all buttons: same font + h
 /* --- total, cash, change --- */
 .order-total {
     display: flex;
-    justify-content: space-between;
+    justify-content: space-between;                                 /*an line didti igbaw total*/
     font-size: 20px;
     padding-top: 14px;
     margin-top: 10px;
@@ -160,14 +160,14 @@ button { font-family: inherit; cursor: pointer; }   /*all buttons: same font + h
 .order-cash {
     display: flex;
     justify-content: space-between;
-    align-items: center;
+    align-items: center;                        /*below the total*/
     margin-top: 12px;
     font-weight: 600;
 }
 .order-cash-input {
     width: 140px;
     padding: 10px;
-    font-size: 18px;
+    font-size: 18px;                    /*cash receive  box*/
     text-align: right;
     border: 1px solid #ccc;
     border-radius: 10px;
@@ -182,8 +182,8 @@ button { font-family: inherit; cursor: pointer; }   /*all buttons: same font + h
     padding-top: 14px;
 }
 
-/* --- big orange buttons (used in the order panel and popups) --- */
-.order-charge, .login-button, .receipt-print, .confirm-yes {
+/* --- big orange buttons (used in the order panel and popups)  ngatanan ini --- */
+.order-charge, .login-button, .receipt-print {
     width: 100%;
     padding: 16px;
     border: none;
@@ -196,8 +196,8 @@ button { font-family: inherit; cursor: pointer; }   /*all buttons: same font + h
 }
 .order-charge:disabled { background: #ccc; cursor: not-allowed; }       /*gray when it can't be clicked*/
 
-/* --- big outlined buttons --- */
-.order-clear, .login-cancel, .receipt-close, .confirm-no {
+/* --- big outlined buttons -ngatanan ghap ini-- */
+.order-clear, .login-cancel, .receipt-close {
     width: 100%;
     padding: 12px;
     border: 1px solid #ccc;
@@ -209,10 +209,10 @@ button { font-family: inherit; cursor: pointer; }   /*all buttons: same font + h
 }
 
 
-/*7. POPUPS  (.login -> .receipt -> .history -> .confirm)*/
+/*7. POPUPS  (.login -> .receipt -> .history)*/
 
 /* --- shared: dark background behind every popup --- */
-.login, .receipt, .history, .confirm {
+.login, .receipt, .history {
     position: fixed;
     inset: 0;                           /*covers the whole screen*/
     background: rgba(0, 0, 0, 0.45);
@@ -222,10 +222,10 @@ button { font-family: inherit; cursor: pointer; }   /*all buttons: same font + h
     z-index: 500;
     padding: 20px;
 }
-.login.show, .receipt.show, .history.show, .confirm.show { display: flex; }     /*makes the popup visible*/
+.login.show, .receipt.show, .history.show { display: flex; }     /*makes the popup visible*/
 
-/* --- shared: the white box inside every popup --- */
-.login-box, .receipt-box, .history-box, .confirm-box {
+/* --- shared: the white box inside every popup -               an box ini han kada pop up-- */   
+.login-box, .receipt-box, .history-box {
     background: var(--white);
     border-radius: 18px;
     padding: 26px;
@@ -258,17 +258,20 @@ button { font-family: inherit; cursor: pointer; }   /*all buttons: same font + h
 /* --- history popup --- */
 .history-box { width: min(700px, 100%); }                                       /*wider than the others*/
 .history-top { display: flex; justify-content: space-between; align-items: center; }
-.history-buttons { display: flex; align-items: center; gap: 12px; }             /*Reset + x buttons*/
-.history-reset {
+.history-buttons { display: flex; align-items: center; gap: 12px; }             
+.history-close { border: none; background: none; font-size: 32px; line-height: 1; }    /*x close button*/
+
+.history-tabs { display: flex; gap: 8px; margin-top: 10px; }                   /*admin: Today / This week / All time*/
+.history-tabs[hidden] { display: none; }
+.history-tabs button {
     border: 1px solid #ccc;
     background: transparent;
-    border-radius: 20px;
-    padding: 6px 14px;
-    font-size: 13px;
+    padding: 8px 16px;
+    border-radius: 30px;
     font-weight: 600;
+    font-size: 14px;
 }
-.history-reset:hover { border-color: #e74c3c; color: #e74c3c; }                 /*turns red when hovered*/
-.history-close { border: none; background: none; font-size: 32px; line-height: 1; }    /*x close button*/
+.history-tabs button.active { background: var(--black); color: white; border-color: var(--black); }
 
 .history-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin: 14px 0 22px; }  /*3 boxes*/
 .history-stat { background: var(--background); border-radius: 12px; padding: 14px; }
@@ -281,34 +284,12 @@ button { font-family: inherit; cursor: pointer; }   /*all buttons: same font + h
 .history-bar-name { width: 130px; font-weight: 600; }
 .history-bar { flex: 1; background: var(--background); border-radius: 20px; height: 12px; overflow: hidden; }
 .history-bar div { height: 100%; background: var(--accent); border-radius: 20px; }  /*orange bar (width set by JS)*/
-.history-bar-qty { width: 110px; text-align: right; color: var(--gray); }
+.history-bar-qty { width: 110px; text-align: right; color: var(--gray); }   
 
 .history-order { border-bottom: 1px solid #eee; padding: 10px 0; font-size: 14px; }     /*one order in the list*/
 .history-order-top { display: flex; justify-content: space-between; font-weight: 700; }
 .history-order p { margin: 4px 0 0; color: var(--gray); font-size: 13px; }
 .history-empty { color: var(--gray); text-align: center; padding: 30px 0; }     /*"No sales yet."*/
-
-/* --- confirm popup ("Reset today's sales?") --- */
-.confirm-box { text-align: center; width: min(360px, 100%); }
-.confirm-box h2 { margin: 12px 0 6px; }
-.confirm-box p { color: var(--gray); margin: 0 0 20px; line-height: 1.5; }
-.confirm-icon {                         /*round "!" icon*/
-    width: 56px;
-    height: 56px;
-    margin: 0 auto;
-    border-radius: 50%;
-    color: var(--accent);
-    font-size: 30px;
-    font-weight: 900;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-.confirm-buttons { display: flex; gap: 10px; }                                  /*Cancel + Yes side by side*/
-.confirm-buttons button { margin-top: 0; flex: 1; padding: 14px; }
-.confirm-yes { background: #e74c3c; }                                           /*red "Yes, reset" button*/
-.confirm-yes:hover { background: #c0392b; }
-
 
 /* 
    8. TOAST  (small message at the bottom of the screen)
