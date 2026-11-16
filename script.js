@@ -13,7 +13,7 @@ const products = [
 
 // ===== USERS (edit here) =====
 const users = [
-    { username: "admin",   password: "9876",     name: "Admin", admin: true },   // admin: true = can reset sales
+    { username: "admin",   password: "9876",     name: "Admin", admin: true },   // admin: true = can see weekly + overall sales
     { username: "cashier", password: "9876",     name: "Cashier" },
     { username: "meow",    password: "meowmeow", name: "meow" }
 ];
@@ -217,6 +217,7 @@ function chargeOrder() {
     }
     orders.unshift({
         no: orderNo,
+        ts: Date.now(),
         time: new Date().toLocaleString(),
         cashier: currentUser.name,
         total: total,
@@ -264,18 +265,65 @@ function showReceipt(total, cash) {
 
 
 // ===== HISTORY =====
+let historyView = "today";      // "today", "week" or "all" (only the admin can change this)
+
+// when was this order made? (old orders saved before this update only have the text time)
+function orderTime(order) {
+    return order.ts || Date.parse(order.time) || 0;
+}
+
+function startOfToday() {
+    const d = new Date();
+    d.setHours(0, 0, 0, 0);
+    return d.getTime();
+}
+
+// the week starts on Monday
+function startOfWeek() {
+    const d = new Date();
+    d.setHours(0, 0, 0, 0);
+    d.setDate(d.getDate() - (d.getDay() + 6) % 7);
+    return d.getTime();
+}
+
+function isAdmin() {
+    return !!(currentUser && currentUser.admin);
+}
+
+// cashier: always today only.  admin: today / this week / all time
+function getVisibleOrders() {
+    const view = isAdmin() ? historyView : "today";
+    if (view === "all") return orders;
+
+    const from = view === "week" ? startOfWeek() : startOfToday();
+    return orders.filter(o => orderTime(o) >= from);
+}
+
 function showHistory() {
-    // no orders yet: show "No sales yet." and stop
-    $(".history-empty").hidden = orders.length > 0;
-    $(".history-content").hidden = orders.length === 0;
-    if (orders.length === 0) return;
+    const admin = isAdmin();
+    const view = admin ? historyView : "today";
+    const list = getVisibleOrders();
+
+    // title + tabs
+    const titles = { today: "Today's sales", week: "This week's sales", all: "Overall sales" };
+    $(".history-title").textContent = titles[view];
+    $(".history-tabs").hidden = !admin;
+    for (const tab of document.querySelectorAll(".history-tabs button")) {
+        tab.classList.toggle("active", tab.dataset.view === view);
+    }
+
+    // no orders in this period: show the message and stop
+    $(".history-empty").textContent = view === "today" ? "No sales yet today." : "No sales for this period.";
+    $(".history-empty").hidden = list.length > 0;
+    $(".history-content").hidden = list.length === 0;
+    if (list.length === 0) return;
 
     // count how many of each product were sold
     const sold = {};        // { "Taco": { qty: 3, money: 237 } }
     let itemsSold = 0;
     let revenue = 0;
 
-    for (const order of orders) {
+    for (const order of list) {
         revenue += order.total;
         for (const item of order.items) {
             if (!sold[item.name]) sold[item.name] = { qty: 0, money: 0 };
@@ -285,9 +333,40 @@ function showHistory() {
         }
     }
 
-    $("#history-orders-count").textContent = orders.length;
+    $("#history-orders-count").textContent = list.length;
     $("#history-items-count").textContent = itemsSold;
     $("#history-revenue").textContent = peso(revenue);
+
+    // sales by day (admin, this week only): Monday to Sunday
+    $(".history-days-section").hidden = !(admin && view === "week");
+    $(".history-days").innerHTML = "";
+    if (admin && view === "week") {
+        const days = [];
+        const monday = new Date(startOfWeek());
+        for (let i = 0; i < 7; i++) {
+            const d = new Date(monday);
+            d.setDate(monday.getDate() + i);
+            days.push({ date: d, from: d.getTime(), money: 0, count: 0 });
+        }
+        for (const order of list) {
+            const t = orderTime(order);
+            for (let i = days.length - 1; i >= 0; i--) {
+                if (t >= days[i].from) {
+                    days[i].money += order.total;
+                    days[i].count++;
+                    break;
+                }
+            }
+        }
+        const topMoney = Math.max(...days.map(d => d.money), 1);
+        for (const day of days) {
+            const bar = addFromTemplate("tpl-history-bar", ".history-days", {
+                name: day.date.toLocaleDateString(undefined, { weekday: "short", month: "short", day: "numeric" }),
+                qty: peso(day.money) + " · " + day.count + (day.count === 1 ? " order" : " orders")
+            });
+            bar.querySelector(".history-bar div").style.width = (day.money / topMoney) * 100 + "%";
+        }
+    }
 
     // best sellers: the most sold product comes first
     const ranked = Object.entries(sold).sort((a, b) => b[1].qty - a[1].qty);
@@ -303,9 +382,10 @@ function showHistory() {
         bar.querySelector(".history-bar div").style.width = (data.qty / topQty) * 100 + "%";
     }
 
-    // list of all orders
+    // list of orders
+    $(".history-orders-title").textContent = view === "today" ? "Today's orders" : "All orders";
     $(".history-orders").innerHTML = "";
-    for (const order of orders) {
+    for (const order of list) {
         const names = [];
         for (const item of order.items) names.push(item.qty + " × " + item.name);
 
@@ -319,28 +399,14 @@ function showHistory() {
 }
 
 function openHistory() {
-    showHistory();
-    // only the admin can see the Reset button
-    $(".history-reset").hidden = !(currentUser && currentUser.admin);
-    show(".history");
-}
-
-function askReset() {
-    if (!currentUser || !currentUser.admin) {
-        showToast("Only the admin can reset sales.", true);
+    if (!currentUser) {
+        showToast("Please sign in first.", true);
+        openLogin();
         return;
     }
-    show(".confirm");
-}
-
-function resetSales() {
-    orderNo = 1;
-    orders = [];
-    saveData();
-    showOrderNumber();
+    if (!isAdmin()) historyView = "today";
     showHistory();
-    hide(".confirm");
-    showToast("Sales reset.");
+    show(".history");
 }
 
 
@@ -432,9 +498,10 @@ $(".receipt-print").onclick = function () { window.print(); };
 $(".receipt-close").onclick = function () { hide(".receipt"); };
 
 // history popup buttons
-$(".history-reset").onclick = askReset;
+for (const tab of document.querySelectorAll(".history-tabs button")) {
+    tab.onclick = function () {
+        historyView = tab.dataset.view;
+        showHistory();
+    };
+}
 $(".history-close").onclick = function () { hide(".history"); };
-
-// confirm popup buttons
-$(".confirm-yes").onclick = resetSales;
-$(".confirm-no").onclick = function () { hide(".confirm"); };
