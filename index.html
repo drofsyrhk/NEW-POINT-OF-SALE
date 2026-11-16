@@ -101,11 +101,17 @@
     <div class="history">
         <div class="history-box">
             <div class="history-top">
-                <h2>Sales history</h2>
+                <h2 class="history-title">Sales history</h2>
                 <div class="history-buttons">
-                    <button class="history-reset">Reset</button>
                     <button class="history-close">×</button>
                 </div>
+            </div>
+
+            <!-- admin only: JS shows these tabs -->
+            <div class="history-tabs" hidden>
+                <button data-view="today">Today</button>
+                <button data-view="week">This week</button>
+                <button data-view="all">All time</button>
             </div>
 
             <div class="history-body">
@@ -119,24 +125,15 @@
                         <div class="history-stat"><span>ITEMS SOLD</span><strong id="history-items-count"></strong></div>
                         <div class="history-stat"><span>REVENUE</span><strong id="history-revenue"></strong></div>
                     </div>
+                    <div class="history-days-section" hidden>
+                        <h3>Sales by day</h3>
+                        <div class="history-days"></div>
+                    </div>
                     <h3>Best sellers</h3>
                     <div class="history-bars"></div>
-                    <h3>All orders</h3>
+                    <h3 class="history-orders-title">All orders</h3>
                     <div class="history-orders"></div>
                 </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- CONFIRM POPUP (reset sales) -->
-    <div class="confirm">
-        <div class="confirm-box">
-            <div class="confirm-icon">!</div>
-            <h2 class="confirm-title">Reset today's sales?</h2>
-            <p class="confirm-text">This sets the sales total and order numbers back to zero.</p>
-            <div class="confirm-buttons">
-                <button class="confirm-no">Cancel</button>
-                <button class="confirm-yes">Yes, reset</button>
             </div>
         </div>
     </div>
